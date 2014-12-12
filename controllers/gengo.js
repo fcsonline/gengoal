@@ -77,7 +77,28 @@ module.exports = function (app) {
   });
 
   app.post('/:repository/github', function (req, res) {
+    var branch;
+
     res.send('OK');
-    req.repository.sync();
+
+    if (_.isEmpty(req.body)) {
+      console.log('Empty body');
+      return;
+    }
+
+    branch = req.body.ref.match('refs/heads/(.*)')[1];
+
+    console.log('Incoming release branch "' + branch + '" for respository "' + req.repository.name + '"...');
+
+    req.repository.pull()
+      .then(function () {
+        return req.repository.checkout(branch);
+      })
+      .then(function () {
+        return req.repository.load();
+      })
+      .then(function () {
+        return req.repository.jobs();
+      });
   });
 };
