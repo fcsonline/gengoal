@@ -1,0 +1,16 @@
+{
+    "port": 5000,
+
+    "comment": "Please don't ...",
+
+    "repositories": [
+      {
+        "url": "git@github.com:your/repository.git"
+      , "name": "app-frontend"
+      , "directory": "app/translations"
+      , "master": "en"
+      , "comment": "Please don't..."
+      , "only": ""
+      }
+    ]
+}

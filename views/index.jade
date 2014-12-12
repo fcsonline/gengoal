@@ -1,0 +1,17 @@
+doctype default
+html
+  head
+    title!= 'Gengo Translations'
+    link(href='http://fonts.googleapis.com/css?family=Josefin+Slab', rel='stylesheet', type='text/css')
+
+  body
+    each repository in repositories
+      div.repository(style="border: 1px solid #ddd")
+        h1= repository.config.name
+        h2= "Status:" + repository.status
+        h3= "Languages:" + repository.languages.length
+        h2= "Pending copies:" + repository.info.counter
+        h2= "Last commit:" + repository.info.last_commit
+        h2= "Last sync:" + repository.info.last_sync
+        h3
+          a(href= repository.config.url)= repository.config.url
