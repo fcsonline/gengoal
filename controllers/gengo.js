@@ -77,7 +77,8 @@ module.exports = function (app) {
   });
 
   app.post('/:repository/github', function (req, res) {
-    var branch;
+    var branch
+      , regexp;
 
     res.send('OK');
 
@@ -88,7 +89,16 @@ module.exports = function (app) {
 
     branch = req.body.ref.match('refs/heads/(.*)')[1];
 
-    console.log('Incoming release branch "' + branch + '" for respository "' + req.repository.name + '"...');
+    if (req.repository.config.branch) {
+      regexp = new RegExp(req.repository.config.branch);
+
+      if (!branch.match(regexp)) {
+        console.log('Ignored branch "' + branch + '" for respository "' + req.repository.name + '"...');
+        return;
+      }
+    }
+
+    console.log('Incoming branch "' + branch + '" for respository "' + req.repository.name + '"...');
 
     req.repository.pull()
       .then(function () {
