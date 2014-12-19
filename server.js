@@ -14,6 +14,7 @@ var knexfile    = require('./knexfile')
   , events      = require('events')
   , gengo       = require('gengo')
   , Promise     = require('bluebird')
+  , GitHubApi   = require('github')
   , config      = require('./config.json')
   , Tracker     = require('./lib/tracker')
   , envvarsnames
@@ -28,11 +29,11 @@ var knexfile    = require('./knexfile')
   , app;
 
 // Checking the required environment variables
-envvarsnames = ['GENGO_CALLBACK', 'GENGO_PUBLIC_KEY', 'GENGO_PRIVATE_KEY'];
+envvarsnames = ['GENGOAL_CALLBACK', 'GENGOAL_PUBLIC_KEY', 'GENGOAL_PRIVATE_KEY', 'GENGOAL_GITHUB_USERNAME', 'GENGOAL_GITHUB_BASIC_PASSWORD'];
 getenv = _.partial(_.pick, process.env);
 envvars = getenv.apply(this, envvarsnames);
 
-if (_.keys(envvars).length !== 3) {
+if (_.keys(envvars).length < 4) {
   console.log("You must set those environment variables: " + envvarsnames.join(', '));
   process.exit(-1);
 }
@@ -47,9 +48,9 @@ if (!which('hub')) {
   process.exit(-1);
 }
 
-callback_url  = envvars.GENGO_CALLBACK;
-public_key    = envvars.GENGO_PUBLIC_KEY;
-private_key   = envvars.GENGO_PRIVATE_KEY;
+callback_url  = envvars.GENGOAL_CALLBACK;
+public_key    = envvars.GENGOAL_PUBLIC_KEY;
+private_key   = envvars.GENGOAL_PRIVATE_KEY;
 
 config.callback_url = callback_url;
 
@@ -93,7 +94,34 @@ boot = new Promise(function (resolve, reject) {
   });
 });
 
-boot.then(function () {
+boot
+.then(function() {
+  var token
+    , password
+    , options;
+
+  options = {
+    username: envvars.GENGOAL_GITHUB_USERNAME
+  };
+
+  password = envvars.GENGOAL_GITHUB_BASIC_PASSWORD;
+  token = envvars.GENGOAL_GITHUB_OAUTH_TOKEN;
+
+  github = new GitHubApi({version: '3.0.0'});
+
+  if (password) {
+    options.type = 'basic';
+    options.password = password;
+  } else if (token) {
+    options.type = 'oauth';
+    options.token = token;
+  } else {
+    console.log('Missing GitHub Authentication information...');
+  }
+
+  github.authenticate(options);
+})
+.then(function () {
   var tracker = new Tracker(config, gengo);
 
   console.log('Initializing repositories...');
@@ -105,6 +133,7 @@ boot.then(function () {
     app.set('bookshelf', bookshelf);
     app.set('config', config);
     app.set('tracker', tracker);
+    app.set('github', github);
 
     server.listen(config.port);
   });

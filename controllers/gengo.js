@@ -63,6 +63,20 @@ module.exports = function (app) {
         })
         .then(function () {
           console.log('Added a new copy to the order branch "' + branch + '"');
+          req.repository.decreasePending(branch);
+        })
+        .then(function () {
+          if (req.repository.checkCompleted(branch)) {
+            console.log('The order "' + branch + '" is completed. Pushing the branch...');
+            return req.repository.push(branch)
+              .then(function () {
+                console.log('Creating the pullrequest...');
+                return req.repository.pullrequest(app.get('github'), branch);
+              })
+              .then(function () {
+                console.log('Pull Request created! :D');
+              });
+          }
         });
     }
   });
