@@ -15,7 +15,10 @@ Steps:
 - A GitHub hook hits the Gengoal instance
 - Gengoal fetches the new branch to a local directory
 - Gengoal check the differences between the master configured language and the other available languages
-- It pushes a 
+- It pushes a Gengo order with all the differences to be translated
+- It starts to get all the translated copies
+- When all the copies are translated it pushes a branch to GitHub
+- It creates a pull request to be reviewed by the development team
 
 ![](./docs/diagram.png)
     
