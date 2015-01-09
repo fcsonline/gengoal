@@ -5,7 +5,7 @@
 
     "repositories": [
       {
-        "url": "github.com:your/repository.git"
+        "url": "github.com/your/repository.git"
       , "name": "app-frontend"
       , "directory": "app/translations"
       , "master": "en"
