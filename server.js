@@ -48,6 +48,7 @@ public_key    = envvars.GENGOAL_PUBLIC_KEY;
 private_key   = envvars.GENGOAL_PRIVATE_KEY;
 
 config.callback_url = callback_url;
+config.envvars = envvars;
 
 app = express();
 server = http.createServer(app);
