@@ -43,11 +43,6 @@ if (!which('git')) {
   process.exit(-1);
 }
 
-if (!which('hub')) {
-  console.log("You must install hub");
-  process.exit(-1);
-}
-
 callback_url  = envvars.GENGOAL_CALLBACK;
 public_key    = envvars.GENGOAL_PUBLIC_KEY;
 private_key   = envvars.GENGOAL_PRIVATE_KEY;
