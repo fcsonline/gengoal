@@ -45,6 +45,9 @@ Steps:
       , "name": "app-frontend"
       , "directory": "app/translations"
       , "master": "en"
+      , "only": "es.*" # Translate only keys that match this RegExp
+      , "tier": "standard"
+      , "master": "en"
       , "comment": "Please don't..."
       , "branch": "release/.*"
       }
@@ -55,7 +58,7 @@ Steps:
 
 ### Setup the environment variables
 
-To be able to connect all the tool parts, you need to setup the environment variables below: 
+To be able to connect all the tool parts, you need to setup the environment variables below:
 
 - `GENGOAL_CALLBACK`: The public url pointing to the Gengoal instance. Ex: `http://mydomain.com/gengoal/`. To test the tool you can play with [localtunnel](https://localtunnel.me) or [ngork](https://ngrok.com)
 - `GENGOAL_PUBLIC_KEY`: Your Gengo public key

@@ -11,6 +11,7 @@
       , "master": "en"
       , "comment": "Please don't..."
       , "only": ""
+      , "tier": "standard"
       , "branch": "release/*"
       , "throughput": 2
       }
