@@ -65,6 +65,7 @@ To be able to connect all the tool parts, you need to setup the environment vari
 - `GENGOAL_PRIVATE_KEY`: Your Gengo private key
 - `GENGOAL_GITHUB_USERNAME`: Your commiter GitHub user to create pull requests
 - `GENGOAL_GITHUB_BASIC_PASSWORD`: Your commiter GitHub user password
+- `GENGOAL_SANDBOX`: Use Gengo Sandbox or not. Valid values `true` or `false`. More info: http://sandbox.gengo.com
 
 ### Start the a Gengoal instance
 

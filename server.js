@@ -29,7 +29,7 @@ var knexfile    = require('./knexfile')
   , app;
 
 // Checking the required environment variables
-envvarsnames = ['GENGOAL_CALLBACK', 'GENGOAL_PUBLIC_KEY', 'GENGOAL_PRIVATE_KEY', 'GENGOAL_GITHUB_USERNAME', 'GENGOAL_GITHUB_BASIC_PASSWORD'];
+envvarsnames = ['GENGOAL_CALLBACK', 'GENGOAL_PUBLIC_KEY', 'GENGOAL_PRIVATE_KEY', 'GENGOAL_GITHUB_USERNAME', 'GENGOAL_GITHUB_BASIC_PASSWORD', 'GENGOAL_SANDBOX'];
 getenv = _.partial(_.pick, process.env);
 envvars = getenv.apply(this, envvarsnames);
 
@@ -46,6 +46,7 @@ if (!which('git')) {
 callback_url  = envvars.GENGOAL_CALLBACK;
 public_key    = envvars.GENGOAL_PUBLIC_KEY;
 private_key   = envvars.GENGOAL_PRIVATE_KEY;
+sandbox       = envvars.GENGOAL_SANDBOX === 'true';
 
 config.callback_url = callback_url;
 config.envvars = envvars;
@@ -66,8 +67,6 @@ require('./controllers/gengo')(app);
 // Gengo boot
 boot = new Promise(function (resolve, reject) {
 
-  sandbox = false;
-  sandbox = true;
   gengo = gengo(public_key, private_key, sandbox);
 
   gengo.account.stats(function (err, res) {
