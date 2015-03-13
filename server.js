@@ -81,9 +81,11 @@ boot = new Promise(function (resolve, reject) {
     gengo.glossary.list(function (err, res) {
       if (err) {
         console.log('Error listing Gengo glossaries: ', err);
-        return;
+      } else {
+        config.glossaries = res;
       }
 
+      // Ignore errors...
       resolve();
     });
   });
