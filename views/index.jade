@@ -1,17 +1,110 @@
 doctype default
 html
   head
-    title!= 'Gengo Translations'
-    link(href='http://fonts.googleapis.com/css?family=Josefin+Slab', rel='stylesheet', type='text/css')
+    title Gengo Translations
+    link(href='./css/bootstrap.min.css', rel='stylesheet')
+    link(href='./css/bootstrap-responsive.css', rel='stylesheet')
+    link(href='./css/jumbotron-narrow.css', rel='stylesheet')
 
   body
-    each repository in repositories
-      div.repository(style="border: 1px solid #ddd")
-        h1= repository.config.name
-        h2= "Status:" + repository.status
-        h3= "Languages:" + repository.languages.length
-        h2= "Pending copies:" + repository.info.counter
-        h2= "Last commit:" + repository.info.last_commit
-        h2= "Last sync:" + repository.info.last_sync
-        h3
-          a(href= repository.config.url)= repository.config.url
+    .container
+      .header
+        ul.nav.nav-pills.pull-right
+          li.active
+            a(href='#') Dashboard
+          li
+            a(href='#') Settings
+          li
+            a(href='#') About
+        h3.text-muted Gengoal
+      .jumbotron
+        h1 Welcome to Gengoal!
+        p.lead
+          | Gengoal lets you delegate your project copy translations to an automatic process. Integrate your source translations with
+          a(href='http://www.gengo.com')  Gengo
+          |  and
+          a(href='http://www.github.com')  GitHub
+
+        p
+          a.btn.btn-lg.btn-success(href='#', role='button') Got it!
+      .row.marketing
+        .col-lg-6
+          h4
+            a(href='/repository/teambox-frontend') Teambox Frontend
+
+          p
+            | Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.
+          h4
+            a(href='/repository/teambox-ios') Teambox iOS
+          p
+            | Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.
+        .col-lg-6
+          h4
+            a(href='/repository/teambox-hosted') Teambox Hosted
+          p
+            | Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.
+          h4
+            a(href='/repository/teambox-android') Teambox Android
+          p
+            | Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.
+      .row.marketing
+        h4 Repository information
+          each repository in repositories
+            dl.dl-horizontal
+              dt Id:
+              dd= repository.config.name
+              dt Status:
+              dd= repository.status
+              dt Languages:
+              dd= repository.languages.length
+              dt Pending copies:
+              dd= repository.info.counter
+              dt Last commit:
+              dd= repository.info.last_commit
+              dt Last sync:
+              dd= repository.info.last_commit
+      .row.marketing
+        h4 Recent orders
+        table.table.table-striped
+          thead
+            tr
+              th #
+              th Order name
+              th Repository
+              th Details
+          tbody
+            tr
+              th(scope='row') 1
+              td Mark
+              td Otto
+              td @mdo
+            tr
+              th(scope='row') 2
+              td Jacob
+              td Thornton
+              td @fat
+            tr
+              th(scope='row') 3
+              td Larry
+              td the Bird
+              td @twitter
+            tr
+              th(scope='row') 1
+              td Mark
+              td Otto
+              td @mdo
+            tr
+              th(scope='row') 2
+              td Jacob
+              td Thornton
+              td @fat
+            tr
+              th(scope='row') 3
+              td Larry
+              td the Bird
+              td @twitter
+      .footer
+        p
+          | Gengoal project -
+          a(href='https://github.com/fcsonline/gengoal', target='_blank')  Fork me!
+

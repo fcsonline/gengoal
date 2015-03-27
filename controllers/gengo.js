@@ -1,23 +1,12 @@
 /*jshint laxcomma:true */
 
-var _ = require('underscore');
+var express = require('express')
+  , _ = require('underscore');
 
 module.exports = function (app) {
-  app.get('/status', function (req, res) {
-    res.send('OK');
-  });
+  var api = express();
 
-  app.get('/', function (req, res) {
-    var tracker;
-
-    tracker = app.get('tracker');
-
-    res.render('index', {
-      repositories: tracker.repositories
-    });
-  });
-
-  app.param('repository', function(req, res, next, repository_id){
+  api.param('repository', function(req, res, next, repository_id){
     var tracker
       , repository;
 
@@ -32,7 +21,7 @@ module.exports = function (app) {
     }
   });
 
-  app.post('/:repository/gengo', function (req, res) {
+  api.post('/:repository/gengo', function (req, res) {
     var language
       , branch
       , job;
@@ -81,16 +70,16 @@ module.exports = function (app) {
     }
   });
 
-  app.get('/:repository/sample', function (req, res) {
+  api.get('/:repository/sample', function (req, res) {
     res.json(req.repository.jobs());
   });
 
-  app.get('/:repository/normalize', function (req, res) {
+  api.get('/:repository/normalize', function (req, res) {
     res.send('Done');
     req.repository.normalize();
   });
 
-  app.post('/:repository/github', function (req, res) {
+  api.post('/:repository/github', function (req, res) {
     var branch
       , regexp;
 
@@ -125,4 +114,6 @@ module.exports = function (app) {
         return req.repository.jobs();
       });
   });
+
+  return api;
 };

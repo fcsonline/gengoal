@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin" : {
-    "gengoal" : "bin/gengoal"
+  "bin": {
+    "gengoal": "bin/gengoal"
   },
   "keywords": [
     "gengo",
@@ -22,14 +22,17 @@
     "bluebird": "^2.3.11",
     "body-parser": "^1.9.2",
     "bookshelf": "^0.7.9",
+    "compression": "^1.4.2",
     "deep-diff": "^0.3.0",
     "express": "^4.10.2",
     "gengo": "^0.1.8",
     "github": "^0.2.3",
+    "helmet": "^0.7.0",
     "jade": "^1.8.0",
     "knex": "^0.7.3",
     "multer": "^0.1.6",
     "nodegit": "^0.1.4",
+    "serve-static": "^1.9.1",
     "shelljs": "^0.3.0",
     "sqlite3": "^3.0.4",
     "underscore": "^1.7.0",

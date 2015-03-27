@@ -1,14 +1,14 @@
 /*jshint laxcomma:true */
 
-var knexfile    = require('./knexfile')
-  , knex        = require('knex')(knexfile.tracker)
-  , bookshelf   = require('bookshelf')(knex)
-  , path        = require('path')
+var path        = require('path')
   , fs          = require('fs')
   , _           = require('underscore')
   , which       = require('shelljs').which
   , express     = require('express')
   , bodyParser  = require('body-parser')
+  , serveStatic = require('serve-static')
+  , compression = require('compression')
+  , helmet      = require('helmet')
   , multer      = require('multer')
   , http        = require('http')
   , events      = require('events')
@@ -58,11 +58,15 @@ events = new events.EventEmitter();
 app.engine('jade', require('jade').__express);
 app.set('view engine', 'jade');
 
+app.use(helmet());
+app.use(serveStatic('./public'));
+app.use(compression({ threshold: 512 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(multer());
 
-require('./controllers/gengo')(app);
+app.use('/admin', require('./controllers/admin')(app));
+app.use('/', require('./controllers/gengo')(app)); // Move to /api
 
 // Gengo boot
 boot = new Promise(function (resolve, reject) {
@@ -77,17 +81,17 @@ boot = new Promise(function (resolve, reject) {
     console.log('Initialized Gengo connection!');
     console.log('Spent: ' + res.credits_spent + ' ' + res.currency);
 
-    console.log('Fetching glossaries...');
-    gengo.glossary.list(function (err, res) {
-      if (err) {
-        console.log('Error listing Gengo glossaries: ', err);
-      } else {
-        config.glossaries = res;
-      }
+    resolve();
 
-      // Ignore errors...
-      resolve();
-    });
+    // console.log('Fetching glossaries...');
+    // gengo.glossary.list(function (err, res) {
+    //   if (err) {
+    //     console.log('Error listing Gengo glossaries: ', err);
+    //     return;
+    //   }
+
+    //   resolve();
+    // });
   });
 });
 
@@ -127,7 +131,6 @@ boot
     console.log('Gengo Tracker Server: Listening on port ' + config.port);
 
     app.set('events', events);
-    app.set('bookshelf', bookshelf);
     app.set('config', config);
     app.set('tracker', tracker);
     app.set('github', github);
