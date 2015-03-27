@@ -4,9 +4,9 @@ var express = require('express')
   , _ = require('underscore');
 
 module.exports = function (app) {
-  var api = express();
+  var interfaces = express();
 
-  api.param('repository', function(req, res, next, repository_id){
+  interfaces.param('repository', function(req, res, next, repository_id){
     var tracker
       , repository;
 
@@ -21,7 +21,7 @@ module.exports = function (app) {
     }
   });
 
-  api.post('/:repository/gengo', function (req, res) {
+  interfaces.post('/:repository/gengo', function (req, res) {
     var language
       , branch
       , job;
@@ -70,16 +70,16 @@ module.exports = function (app) {
     }
   });
 
-  api.get('/:repository/sample', function (req, res) {
+  interfaces.get('/:repository/sample', function (req, res) {
     res.json(req.repository.jobs());
   });
 
-  api.get('/:repository/normalize', function (req, res) {
+  interfaces.get('/:repository/normalize', function (req, res) {
     res.send('Done');
     req.repository.normalize();
   });
 
-  api.post('/:repository/github', function (req, res) {
+  interfaces.post('/:repository/github', function (req, res) {
     var branch
       , regexp;
 
@@ -115,5 +115,5 @@ module.exports = function (app) {
       });
   });
 
-  return api;
+  return interfaces;
 };

@@ -1,0 +1,51 @@
+extends layout
+
+block content
+  .row.marketing
+    h4 Order information
+      each repository in repositories
+        dl.dl-horizontal
+          dt Id:
+          dd= 'gengo-23432'
+          dt Status:
+          dd= 'Pending'
+          dt Total copies:
+          dd= 2
+          dt Pending copies:
+          dd= 1
+          dt Last update:
+          dd= '14th January 2015 12:32'
+          dt Price:
+          dd= '$13.40'
+
+  .row.marketing
+    h4 Order jobs
+    table.table.table-striped
+      thead
+        tr
+          th #
+          th Key
+          th Language
+          th Status
+          th Master
+          th Result
+      tbody
+        tr.success
+          th(scope='row')= 1
+          td
+            samp= 'es.models.user.new'
+          td= 'es'
+          td= 'complete'
+          td
+            em= 'New user'
+          td
+            em= 'Nuevo usuario'
+        tr.warning
+          th(scope='row')= 2
+          td
+            samp= 'es.models.user.delete'
+          td= 'es'
+          td= 'pending'
+          td
+            em= 'Remove user'
+          td= '...'

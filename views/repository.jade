@@ -1,0 +1,41 @@
+extends layout
+
+block content
+  .row.marketing
+    h4 Repository information
+      each repository in repositories
+        dl.dl-horizontal
+          dt Id:
+          dd= repository.config.name
+          dt Status:
+          dd= repository.status
+          dt Languages:
+          dd= repository.languages.length
+          dt Pending copies:
+          dd= repository.info.counter
+          dt Last commit:
+          dd= repository.info.last_commit
+          dt Last sync:
+          dd= repository.info.last_commit
+
+  .row.marketing
+    h4 Recent orders
+    table.table.table-striped
+      thead
+        tr
+          th #
+          th Order name
+          th Status
+          th Total jobs
+          th Pending jobs
+          th Price
+      tbody
+        each order, i in orders
+          tr(class= ( order.status === 'complete' ? 'success' : 'warning') ).warnign
+            th(scope='row')= i + 1
+            td
+              a(href='/admin/orders/' + order.id)= order.branch
+            td= order.status
+            td= order.total_jobs
+            td= order.pending_jobs
+            td= order.price + ' USD'

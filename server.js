@@ -1,6 +1,7 @@
 /*jshint laxcomma:true */
 
-var path        = require('path')
+var environment = process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+  , path        = require('path')
   , fs          = require('fs')
   , _           = require('underscore')
   , which       = require('shelljs').which
@@ -16,6 +17,10 @@ var path        = require('path')
   , Promise     = require('bluebird')
   , GitHubApi   = require('github')
   , config      = require('./config.json')
+  , knexfile    = require('./knexfile')
+  , config      = require('./config.json')
+  , knex        = require('knex')(knexfile[environment])
+  , bookshelf   = require('bookshelf')(knex)
   , Tracker     = require('./lib/tracker')
   , envvarsnames
   , envvars
@@ -57,6 +62,7 @@ events = new events.EventEmitter();
 
 app.engine('jade', require('jade').__express);
 app.set('view engine', 'jade');
+app.set('bookshelf', bookshelf);
 
 app.use(helmet());
 app.use(serveStatic('./public'));
@@ -66,7 +72,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(multer());
 
 app.use('/admin', require('./controllers/admin')(app));
-app.use('/', require('./controllers/gengo')(app)); // Move to /api
+app.use('/api', require('./controllers/api')(app));
+app.use('/', require('./controllers/interfaces')(app));
 
 // Gengo boot
 boot = new Promise(function (resolve, reject) {
@@ -124,9 +131,6 @@ boot
 })
 .then(function () {
   var tracker = new Tracker(config, gengo);
-
-  console.log('Initializing repositories...');
-  tracker.init().then(function () {
     console.log('Repositories initialized...');
     console.log('Gengo Tracker Server: Listening on port ' + config.port);
 
@@ -136,5 +140,8 @@ boot
     app.set('github', github);
 
     server.listen(config.port);
-  });
+
+  //console.log('Initializing repositories...');
+  //tracker.init().then(function () {
+  //});
 });
