@@ -29,7 +29,7 @@ module.exports = function (app) {
     res.send('OK');
 
     if (_.isEmpty(req.body)) {
-      console.log('Empty body');
+      console.log('Empty Gengo body');
       return;
     }
 
@@ -86,7 +86,12 @@ module.exports = function (app) {
     res.send('OK');
 
     if (_.isEmpty(req.body)) {
-      console.log('Empty body');
+      console.log('Empty GitHub body');
+      return;
+    }
+
+    if (req.body.zen) {
+      console.log('Received test hook from GitHub! :D');
       return;
     }
 
