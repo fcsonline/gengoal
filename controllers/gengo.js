@@ -36,6 +36,7 @@ module.exports = function (app) {
     var language
       , tracker
       , branch
+      , key
       , job;
 
     res.send('OK');
@@ -51,9 +52,12 @@ module.exports = function (app) {
 
     if (job.status === 'approved' && job.custom_data) {
       branch = 'gengo-' + (job.order_id || req.repository.last_order_id); // Sandbox features
+      key = job.custom_data;
+
+      console.log('Translating "' + key + '" copy...');
 
       language = req.repository.find(job.lc_tgt);
-      language.set(job.custom_data.split('.'), job.body_tgt);
+      language.set(key.split('.'), job.body_tgt);
 
       tracker = app.get('tracker');
       tracker.processTranslation(req.repository, language, branch, app.get('github'));
