@@ -50,17 +50,20 @@ module.exports = function (app) {
 
     console.log('Incoming job for respository "' + req.repository.name + '" with status "' + job.status + '"...');
 
-    if (job.status === 'approved' && job.custom_data) {
-      branch = 'gengo-' + (job.order_id || req.repository.last_order_id); // Sandbox features
+    if (job.custom_data) {
       key = job.custom_data;
 
-      console.log('Translating "' + key + '" copy...');
+      if (job.status === 'available') {
+        console.log('Translating "' + key + '" copy...');
+      } else if (job.status === 'approved') {
+        branch = 'gengo-' + (job.order_id || req.repository.last_order_id); // Sandbox features
 
-      language = req.repository.find(job.lc_tgt);
-      language.set(key.split('.'), job.body_tgt);
+        language = req.repository.find(job.lc_tgt);
+        language.set(key.split('.'), job.body_tgt);
 
-      tracker = app.get('tracker');
-      tracker.processTranslation(req.repository, language, branch, app.get('github'));
+        tracker = app.get('tracker');
+        tracker.processTranslation(req.repository, language, branch, app.get('github'));
+      }
     }
   });
 
