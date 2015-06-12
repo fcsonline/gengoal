@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin" : {
-    "gengoal" : "bin/gengoal"
+  "bin": {
+    "gengoal": "bin/gengoal"
   },
   "keywords": [
     "gengo",
@@ -27,12 +27,12 @@
     "gengo": "^0.1.8",
     "github": "^0.2.3",
     "jade": "^1.8.0",
+    "js-yaml": "^3.3.1",
     "knex": "^0.7.3",
     "multer": "^0.1.6",
     "nodegit": "^0.1.4",
     "shelljs": "^0.3.0",
     "sqlite3": "^3.0.4",
-    "underscore": "^1.7.0",
-    "yamljs": "^0.2.1"
+    "underscore": "^1.7.0"
   }
 }
