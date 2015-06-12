@@ -22,7 +22,7 @@ module.exports = function (app) {
       , repository;
 
     tracker = app.get('tracker');
-    repository = tracker.find(req.param('repository'));
+    repository = tracker.find(repository_id);
 
     if (repository) {
       req.repository = repository;
