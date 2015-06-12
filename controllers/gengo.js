@@ -34,6 +34,7 @@ module.exports = function (app) {
 
   app.post('/:repository/gengo', function (req, res) {
     var language
+      , tracker
       , branch
       , job;
 
@@ -54,30 +55,8 @@ module.exports = function (app) {
       language = req.repository.find(job.lc_tgt);
       language.set(job.custom_data.split('.'), job.body_tgt);
 
-      req.repository.checkout(branch)
-        .then(function () {
-          return language.save();
-        })
-        .then(function () {
-          return req.repository.commit();
-        })
-        .then(function () {
-          console.log('Added a new copy to the order branch "' + branch + '"');
-          req.repository.decreasePending(branch);
-        })
-        .then(function () {
-          if (req.repository.checkCompleted(branch)) {
-            console.log('The order "' + branch + '" is completed. Pushing the branch...');
-            return req.repository.push(branch)
-              .then(function () {
-                console.log('Creating the pullrequest...');
-                return req.repository.pullrequest(app.get('github'), branch);
-              })
-              .then(function () {
-                console.log('Pull Request created! :D');
-              });
-          }
-        });
+      tracker = app.get('tracker');
+      tracker.processTranslation(req.repository, language, branch, app.get('github'));
     }
   });
 

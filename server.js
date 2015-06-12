@@ -121,6 +121,8 @@ boot
 .then(function () {
   var tracker = new Tracker(config, gengo);
 
+  tracker.throttle(500); // Wait 500ms to process each Gengo callback
+
   console.log('Initializing repositories...');
   tracker.init().then(function () {
     console.log('Repositories initialized...');
