@@ -61,6 +61,9 @@ module.exports = function (app) {
         language = req.repository.find(job.lc_tgt);
         language.set(key.split('.'), job.body_tgt);
 
+        console.log('Added a new copy to the order branch "' + branch + '"');
+        req.repository.decreasePending(branch);
+
         tracker = app.get('tracker');
         tracker.processTranslation(req.repository, language, branch, app.get('github'));
       }
