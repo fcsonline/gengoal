@@ -7,6 +7,7 @@ var knexfile    = require('./knexfile')
   , fs          = require('fs')
   , _           = require('underscore')
   , which       = require('shelljs').which
+  , chalk       = require('chalk')
   , express     = require('express')
   , bodyParser  = require('body-parser')
   , multer      = require('multer')
@@ -17,6 +18,7 @@ var knexfile    = require('./knexfile')
   , GitHubApi   = require('github')
   , config      = require('./config.json')
   , Tracker     = require('./lib/tracker')
+  , logger      = require('./lib/logger')
   , envvarsnames
   , envvars
   , getenv
@@ -34,12 +36,12 @@ getenv = _.partial(_.pick, process.env);
 envvars = getenv.apply(this, envvarsnames);
 
 if (_.keys(envvars).length < 4) {
-  console.log("You must set those environment variables: " + envvarsnames.join(', '));
+  logger.gengoal("You must set those environment variables: " + envvarsnames.join(', '));
   process.exit(-1);
 }
 
 if (!which('git')) {
-  console.log("You must install git");
+  logger.gengoal("You must install git");
   process.exit(-1);
 }
 
@@ -62,7 +64,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(multer());
 
+require('./controllers/common')(app);
 require('./controllers/gengo')(app);
+require('./controllers/github')(app);
 
 // Gengo boot
 boot = new Promise(function (resolve, reject) {
@@ -71,16 +75,17 @@ boot = new Promise(function (resolve, reject) {
 
   gengo.account.stats(function (err, res) {
     if (err) {
-      console.log('Error initializing Gengo connection: ', err);
+      logger.gengo('Error initializing Gengo connection: ' + err);
       return;
     }
-    console.log('Initialized Gengo connection!');
-    console.log('Spent: ' + res.credits_spent + ' ' + res.currency);
 
-    console.log('Fetching glossaries...');
+    logger.gengo('Initialized Gengo connection!');
+    logger.gengo('Spent: ' + res.credits_spent + ' ' + res.currency);
+    logger.gengo('Fetching glossaries...');
+
     gengo.glossary.list(function (err, res) {
       if (err) {
-        console.log('Error listing Gengo glossaries: ', err);
+        logger.gengo('Error listing Gengo glossaries: ' + err);
       } else {
         config.glossaries = res;
       }
@@ -113,7 +118,7 @@ boot
     options.type = 'oauth';
     options.token = token;
   } else {
-    console.log('Missing GitHub Authentication information...');
+    logger.github('Missing GitHub Authentication information...');
   }
 
   github.authenticate(options);
@@ -123,10 +128,10 @@ boot
 
   tracker.debounce(5000); // Store all Gengo callbacks after 5s
 
-  console.log('Initializing repositories...');
+  logger.gengoal('Initializing repositories...');
   tracker.init().then(function () {
-    console.log('Repositories initialized...');
-    console.log('Gengo Tracker Server: Listening on port ' + config.port);
+    logger.gengoal('Repositories initialized...');
+    logger.gengoal('Gengo Tracker Server: Listening on port ' + chalk.magenta(config.port));
 
     app.set('events', events);
     app.set('bookshelf', bookshelf);
