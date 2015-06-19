@@ -39,14 +39,20 @@ module.exports = function (app) {
       , key
       , job;
 
-    res.send('OK');
-
     if (_.isEmpty(req.body)) {
       console.log('Empty body');
+      res.send('OK');
       return;
     }
 
-    job = JSON.parse(req.body.job);
+    try {
+      job = JSON.parse(req.body.job);
+      res.send('OK');
+    } catch (e) {
+      console.log('Unprocessable Entity: ', req.body.job);
+      res.status(422).send('Unprocessable Entity');
+      return;
+    }
 
     console.log('Incoming job for respository "' + req.repository.name + '" with status "' + job.status + '"...');
 
