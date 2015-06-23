@@ -49,7 +49,7 @@ module.exports = function (app) {
       job = JSON.parse(req.body.job);
       res.send('OK');
     } catch (e) {
-      console.log('Unprocessable Entity: ', req.body.job);
+      console.log('Unprocessable Entity: ', req.body, e);
       res.status(422).send('Unprocessable Entity');
       return;
     }
