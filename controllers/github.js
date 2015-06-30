@@ -11,6 +11,11 @@ module.exports = function (app) {
 
     res.send('OK');
 
+    if (req.headers['x-github-event'] === 'ping') {
+      logger.github('Hook to Gengoal properly set up');
+      return;
+    }
+
     if (_.isEmpty(req.body)) {
       logger.github('Empty body');
       return;
