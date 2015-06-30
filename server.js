@@ -1,7 +1,8 @@
 /*jshint laxcomma:true */
 
-var knexfile    = require('./knexfile')
-  , knex        = require('knex')(knexfile.tracker)
+var environment = process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+  , knexfile    = require('./knexfile')
+  , knex        = require('knex')(knexfile[environment])
   , bookshelf   = require('bookshelf')(knex)
   , path        = require('path')
   , fs          = require('fs')
@@ -19,6 +20,7 @@ var knexfile    = require('./knexfile')
   , config      = require('./config.json')
   , Tracker     = require('./lib/tracker')
   , logger      = require('./lib/logger')
+  , Order       = require('./models/order')(bookshelf)
   , envvarsnames
   , envvars
   , getenv
@@ -124,7 +126,22 @@ boot
   github.authenticate(options);
 })
 .then(function () {
-  var tracker = new Tracker(config, gengo);
+  return Order.where({status: 'pending'}).fetchAll().then(function(orders){
+    logger.gengoal('Pending orders: ' + orders.length);
+  });
+})
+.then(function () {
+  var tracker;
+
+  app.set('bookshelf', bookshelf);
+  app.set('github', github);
+  app.set('gengo', gengo);
+
+  tracker = new Tracker(config, app);
+
+  app.set('events', events);
+  app.set('config', config);
+  app.set('tracker', tracker);
 
   tracker.debounce(5000); // Store all Gengo callbacks after 5s
 
@@ -132,12 +149,6 @@ boot
   tracker.init().then(function () {
     logger.gengoal('Repositories initialized...');
     logger.gengoal('Gengo Tracker Server: Listening on port ' + chalk.magenta(config.port));
-
-    app.set('events', events);
-    app.set('bookshelf', bookshelf);
-    app.set('config', config);
-    app.set('tracker', tracker);
-    app.set('github', github);
 
     server.listen(config.port);
   });

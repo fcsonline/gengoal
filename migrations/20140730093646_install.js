@@ -3,18 +3,13 @@ exports.up = function (knex, Promise) {
 
   return knex.schema
 
-    .createTable('copies', function (table) {
+    .createTable('orders', function (table) {
       table.increments('id').primary();
       table.string('repository');
-      table.string('key');
+      table.string('name');
       table.string('status');
-      table.timestamps();
-    })
-
-    .createTable('logs', function (table) {
-      table.increments('id').primary();
-      table.string('repository');
-      table.string('value');
+      table.dateTime('expires_at');
+      table.integer('jobs');
       table.timestamps();
     });
 
@@ -22,6 +17,5 @@ exports.up = function (knex, Promise) {
 
 exports.down = function (knex, Promise) {
   return knex.schema
-  .dropTable('copies')
-  .dropTable('logs');
+  .dropTable('orders');
 };

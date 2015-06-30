@@ -44,7 +44,7 @@ module.exports = function (app) {
         logger.gengo('Added a new copy to the order branch "' + chalk.magenta(branch) + '". Pending: ' + chalk.yellow(pending));
 
         tracker = app.get('tracker');
-        tracker.processTranslation(req.repository, language, branch, app.get('github'));
+        tracker.processTranslation(req.repository, language, branch);
       }
     }
   });
