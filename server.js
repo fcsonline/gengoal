@@ -11,6 +11,9 @@ var environment = process.env.NODE_ENV = process.env.NODE_ENV || 'development'
   , chalk       = require('chalk')
   , express     = require('express')
   , bodyParser  = require('body-parser')
+  , serveStatic = require('serve-static')
+  , compression = require('compression')
+  , helmet      = require('helmet')
   , multer      = require('multer')
   , http        = require('http')
   , events      = require('events')
@@ -61,14 +64,18 @@ events = new events.EventEmitter();
 
 app.engine('jade', require('jade').__express);
 app.set('view engine', 'jade');
+app.set('bookshelf', bookshelf);
 
+app.use(helmet());
+app.use(serveStatic('./public'));
+app.use(compression({ threshold: 512 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(multer());
 
-require('./controllers/common')(app);
-require('./controllers/gengo')(app);
-require('./controllers/github')(app);
+app.use('/admin', require('./controllers/admin')(app));
+app.use('/api', require('./controllers/api')(app));
+app.use('/', require('./controllers/interfaces')(app));
 
 // Gengo boot
 boot = new Promise(function (resolve, reject) {

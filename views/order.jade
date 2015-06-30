@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  .row.marketing
+    h4 Order information
+      dl.dl-horizontal
+        dt Id:
+        dd= order.branch
+        dt Status:
+        dd= order.status
+        dt Expires at:
+        dd= order.expires_at
+        dt Total copies:
+        dd= order.total_jobs
+        dt Pending copies:
+        dd= order.pending_jobs
+        dt Price:
+        dd= order.price + ' USD'
+
+  .row.marketing
+    h4 Order jobs
+    table.table.table-striped
+      thead
+        tr
+          th #
+          th Key
+          th Status
+          th Master
+          th Result
+      tbody
+        each copy, i in copies
+          tr(class= ( copy.status === 'completed' ? 'success' : 'warning') )
+            th(scope='row')= i + 1
+            td
+              samp= copy.key
+            td= copy.status
+            td
+              em= copy.original
+            td
+              em= copy.result || '...'

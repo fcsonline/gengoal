@@ -1,17 +1,44 @@
-doctype default
-html
-  head
-    title!= 'Gengo Translations'
-    link(href='http://fonts.googleapis.com/css?family=Josefin+Slab', rel='stylesheet', type='text/css')
+extends layout
 
-  body
+block content
+  .jumbotron
+    h1 Welcome to Gengoal!
+    p.lead
+      | Gengoal lets you delegate your project copy translations to an automatic process. Integrate your source translations with
+      a(href='http://www.gengo.com')  Gengo
+      |  and
+      a(href='http://www.github.com')  GitHub
+
+    p
+      a.btn.btn-lg.btn-success(href='#', role='button') Got it!
+  .row.marketing
     each repository in repositories
-      div.repository(style="border: 1px solid #ddd")
-        h1= repository.config.name
-        h2= "Status:" + repository.status
-        h3= "Languages:" + repository.languages.length
-        h2= "Pending copies:" + repository.info.counter
-        h2= "Last commit:" + repository.info.last_commit
-        h2= "Last sync:" + repository.info.last_sync
-        h3
-          a(href= repository.config.url)= repository.config.url
+      .col-sm-6
+        h4
+          a(href='/admin/repositories/teambox-frontend') Teambox Frontend
+        p
+          | Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.
+  .row.marketing
+    h4 Recent orders
+    table.table.table-striped
+      thead
+        tr
+          th #
+          th Order name
+          th Repository
+          th Status
+          th Total jobs
+          th Pending jobs
+          th Price
+      tbody
+        each order, i in orders
+          tr(class= ( order.status === 'completed' ? 'success' : 'warning') )
+            th(scope='row')= i + 1
+            td
+              a(href='/admin/orders/' + order.id)= order.branch
+            td
+              a(href='/admin/repositories/' + order.repository)= order.repository
+            td= order.status
+            td= order.total_jobs
+            td= order.pending_jobs
+            td= order.price + ' USD'

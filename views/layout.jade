@@ -1,0 +1,26 @@
+doctype default
+html
+  head
+    title Gengo Translations
+    link(href='/css/bootstrap.min.css', rel='stylesheet')
+    link(href='/css/bootstrap-responsive.css', rel='stylesheet')
+    link(href='/css/jumbotron-narrow.css', rel='stylesheet')
+
+  body
+    .container
+      .header
+        ul.nav.nav-pills.pull-right
+          li
+            a(href='/admin') Dashboard
+          li
+            a(href='/admin/settings') Settings
+          li
+            a(href='#') About
+        h3.text-muted Gengoal
+
+      block content
+
+      .footer
+        p
+          | Gengoal project -
+          a(href='https://github.com/fcsonline/gengoal', target='_blank')  Fork me!
