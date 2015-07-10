@@ -39,9 +39,10 @@ module.exports = function (app) {
   });
 
   interfaces.post('/:repository/gengo', function (req, res) {
-    var language
+    var tracker
       , branch
       , key
+      , result
       , job;
 
     if (_.isEmpty(req.body)) {
@@ -61,47 +62,22 @@ module.exports = function (app) {
 
     if (job.custom_data) {
       key = job.custom_data;
+      result = job.body_tgt;
 
       logger.gengo('Incoming job for respository ' + chalk.cyan(req.repository.name) + ' with status ' + chalk.magenta(job.status) + ' and key ' + chalk.yellow(key) + '...');
 
       if (job.status === 'approved') {
+        tracker = app.get('tracker');
         branch = 'gengo-' + (job.order_id || req.repository.last_order_id); // Fallback for sandbox compatibility
 
-        language = req.repository.find(job.lc_tgt);
-        language.set(key.split('.'), job.body_tgt);
-
-        logger.gengo('Added a new copy to the order branch "' + chalk.magenta(branch) + '"');
-
-        Order(app.get('bookshelf'))
-          .where({branch: branch})
-          .fetch()
-          .then(function (order) {
-            return order
-              .set('pending_jobs', order.get('pending_jobs') - 1)
-              .save();
-          })
-          .then(function (order) {
-            return Copy(app.get('bookshelf'))
-              .where({order_id: order.id, key: key})
-              .fetch()
-              .then(function (copy) {
-                return copy
-                  .set('status', 'completed')
-                  .set('result', job.body_tgt)
-                  .save();
-              });
-          })
-          .then(function () {
-            var tracker = app.get('tracker');
-
-            tracker.processTranslation(req.repository, language, branch);
-          });
+        tracker.processTranslation(key, result, branch);
       }
     }
   });
 
   interfaces.post('/:repository/github', function (req, res) {
-    var branch
+    var tracker
+      , branch
       , regexp;
 
     res.send('OK');
@@ -116,38 +92,10 @@ module.exports = function (app) {
       return;
     }
 
+    tracker = app.get('tracker');
     branch = req.body.ref.match('refs/heads/(.*)')[1];
 
-    if (req.repository.config.branch) {
-      regexp = new RegExp(req.repository.config.branch);
-
-      if (!branch.match(regexp)) {
-        logger.github('Ignored branch "' + branch + '" for respository "' + req.repository.name + '"...');
-        return;
-      }
-    }
-
-    logger.github('Incoming branch "' + branch + '" for respository "' + req.repository.name + '"...');
-
-    Order(app.get('bookshelf'))
-      .where({status: 'pending'})
-      .fetchAll()
-      .then(function(orders){
-        if (orders.length) {
-          logger.gengoal('You have pending orders. Waiting for complete them before process "' + branch + '"...');
-        } else {
-          req.repository.pull()
-            .then(function () {
-              return req.repository.checkout(branch);
-            })
-            .then(function () {
-              return req.repository.load();
-            })
-            .then(function () {
-              return req.repository.jobs();
-            });
-        }
-      });
+    tracker.processNewBranch(req.repository, branch);
   });
 
   return interfaces;

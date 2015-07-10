@@ -150,8 +150,6 @@ boot
   app.set('config', config);
   app.set('tracker', tracker);
 
-  tracker.debounce(5000); // Store all Gengo callbacks after 5s
-
   logger.gengoal('Initializing repositories...');
   tracker.init().then(function () {
     logger.gengoal('Repositories initialized...');
