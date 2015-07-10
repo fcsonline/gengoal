@@ -129,15 +129,24 @@ module.exports = function (app) {
 
     logger.github('Incoming branch "' + branch + '" for respository "' + req.repository.name + '"...');
 
-    req.repository.pull()
-      .then(function () {
-        return req.repository.checkout(branch);
-      })
-      .then(function () {
-        return req.repository.load();
-      })
-      .then(function () {
-        return req.repository.jobs();
+    Order(app.get('bookshelf'))
+      .where({status: 'pending'})
+      .fetchAll()
+      .then(function(orders){
+        if (orders.length) {
+          logger.gengoal('You have pending orders. Waiting for complete them before process "' + branch + '"...');
+        } else {
+          req.repository.pull()
+            .then(function () {
+              return req.repository.checkout(branch);
+            })
+            .then(function () {
+              return req.repository.load();
+            })
+            .then(function () {
+              return req.repository.jobs();
+            });
+        }
       });
   });
 
