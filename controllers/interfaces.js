@@ -29,6 +29,14 @@ module.exports = function (app) {
     res.send('OK');
   });
 
+  interfaces.get('/expired', function (req, res) {
+    var tracker;
+
+    tracker = app.get('tracker');
+
+    tracker.checkExpiredOrders();
+  });
+
   interfaces.get('/:repository/sample', function (req, res) {
     res.json(req.repository.jobs());
   });
