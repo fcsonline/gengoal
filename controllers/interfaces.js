@@ -32,11 +32,13 @@ module.exports = function (app) {
   interfaces.get('/expired', function (req, res) {
     res.send('OK');
 
-    var tracker;
+    app.get('tracker').checkExpiredOrders();
+  });
 
-    tracker = app.get('tracker');
+  interfaces.get('/:repository/recover', function (req, res) {
+    res.send('OK');
 
-    tracker.checkExpiredOrders();
+    app.get('tracker').recover(req.repository, +req.param('timestamp_after'));
   });
 
   interfaces.get('/:repository/sample', function (req, res) {
