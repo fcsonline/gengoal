@@ -30,6 +30,8 @@ module.exports = function (app) {
   });
 
   interfaces.get('/expired', function (req, res) {
+    res.send('OK');
+
     var tracker;
 
     tracker = app.get('tracker');
