@@ -38,7 +38,7 @@ module.exports = function (app) {
   interfaces.get('/:repository/recover', function (req, res) {
     res.send('OK');
 
-    app.get('tracker').recover(req.repository, +req.param('timestamp_after'));
+    app.get('tracker').recover(req.repository, +req.params.timestamp_after);
   });
 
   interfaces.get('/:repository/sample', function (req, res) {
