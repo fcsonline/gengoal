@@ -60,5 +60,16 @@ module.exports = function (app) {
     });
   });
 
+  admin.put('/orders/:order_id', function (req, res) {
+    var tracker;
+
+    tracker = app.get('tracker');
+
+    tracker.forceOrderClose(req.params.order_id)
+    .then(function (order) {
+      res.send(200);
+    });
+  });
+
   return admin;
 };
