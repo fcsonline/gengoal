@@ -1,6 +1,6 @@
 {
   "name": "gengoal",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Tool to translate and track your project copies with the Gengo API",
   "main": "server.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "github": "^0.2.3",
     "helmet": "^0.7.0",
     "jade": "^1.8.0",
-    "js-yaml": "^3.3.1",
+    "js-yaml": "^3.4.6",
     "knex": "^0.7.6",
     "multer": "^0.1.6",
     "nodegit": "^0.1.4",
