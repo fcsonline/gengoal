@@ -32,7 +32,7 @@ module.exports = function (app) {
   interfaces.get('/expired', function (req, res) {
     res.send('OK');
 
-    app.get('tracker').checkExpiredOrders();
+    app.get('tracker').checkExpiredOrders(!!req.query.force);
   });
 
   interfaces.get('/:repository/recover', function (req, res) {
